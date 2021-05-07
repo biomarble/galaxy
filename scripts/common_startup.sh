@@ -146,7 +146,8 @@ if [ $SET_VENV -eq 1 ] && [ $CREATE_VENV -eq 1 ]; then
                 virtualenv -p "$GALAXY_PYTHON" "$GALAXY_VIRTUAL_ENV"
             else
                 vvers=16.7.9
-                vurl="https://files.pythonhosted.org/packages/source/v/virtualenv/virtualenv-${vvers}.tar.gz"
+            #    vurl="https://files.pythonhosted.org/packages/source/v/virtualenv/virtualenv-${vvers}.tar.gz"
+                vurl="https://pypi.tuna.tsinghua.edu.cn/packages/aa/3b/213c384c65e17995cccd0f2bb993b7b82c41f62e74c2f8f39c8e60549d86/virtualenv-${vvers}.tar.gz"
                 vsha=0d62c70883c0342d59c11d0ddac0d954d0431321a41ab20851facf2b222598f3
                 vtmp=$(mktemp -d -t galaxy-virtualenv-XXXXXX)
                 vsrc="$vtmp/$(basename $vurl)"
@@ -184,7 +185,8 @@ if [ $SET_VENV -eq 1 ] && [ -z "$VIRTUAL_ENV" ]; then
 fi
 
 : ${GALAXY_WHEELS_INDEX_URL:="https://wheels.galaxyproject.org/simple"}
-: ${PYPI_INDEX_URL:="https://pypi.python.org/simple"}
+#: ${PYPI_INDEX_URL:="https://pypi.python.org/simple"}
+: ${PYPI_INDEX_URL:="https://pypi.tuna.tsinghua.edu.cn/simple"}
 : ${GALAXY_DEV_REQUIREMENTS:="./lib/galaxy/dependencies/dev-requirements.txt"}
 if [ $REPLACE_PIP -eq 1 ]; then
     python -m pip install 'pip>=8.1'
@@ -237,7 +239,7 @@ fi
 if [ -n "$VIRTUAL_ENV" ]; then
     if ! in_venv "$(command -v node)" || [ "$(node --version)" != "v${NODE_VERSION}" ]; then
         echo "Installing node into $VIRTUAL_ENV with nodeenv."
-        nodeenv -n "$NODE_VERSION" -p
+        nodeenv -n "$NODE_VERSION" -p --mirror=https://npm.taobao.org/mirrors/node
     fi
 elif [ -n "$CONDA_DEFAULT_ENV" ] && [ -n "$CONDA_EXE" ]; then
     if ! in_conda_env "$(command -v node)"; then
@@ -252,7 +254,7 @@ if [ $SKIP_CLIENT_BUILD -eq 0 ]; then
     if [ -n "$VIRTUAL_ENV" ]; then
         if ! in_venv "$(command -v yarn)"; then
             echo "Installing yarn into $VIRTUAL_ENV with npm."
-            npm install --global yarn
+            npm install --registry=https://registry.npm.taobao.org --global yarn
         fi
     elif [ -n "$CONDA_DEFAULT_ENV" ] && [ -n "$CONDA_EXE" ]; then
         if ! in_conda_env "$(command -v yarn)"; then
